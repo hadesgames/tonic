@@ -14,7 +14,7 @@ object Tonic2Build extends Build {
       resolvers ++= repos,
       libraryDependencies ++= deps,
       javaOptions in run ++= Seq(
-        "-Xmx250M"),
+        "-Xmx512M"),
       fork := true
       // add other settings here
     )
@@ -31,7 +31,7 @@ object Tonic2Build extends Build {
       resolvers ++= repos,
       libraryDependencies ++= deps,
       javaOptions in run ++= Seq(
-        "-Xmx250M"),
+        "-Xmx512M"),
       fork := true
       // add other settings here
     )
