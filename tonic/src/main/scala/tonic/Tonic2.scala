@@ -104,7 +104,7 @@ trait ProxyDirectives {
 
 object Tonic extends App with  SimpleRoutingApp with ProxyDirectives {
   implicit val system = ActorSystem()
-  lazy val redis = RedisClient()
+  lazy val redis = RedisClient(System.getenv("REDIS_HOST"))
   val prefix = "kuende_development:session:"
   val cookie = "_kuende_session"
 
