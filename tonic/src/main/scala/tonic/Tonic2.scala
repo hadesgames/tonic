@@ -47,7 +47,8 @@ trait ProxyDirectives {
           modifiedResp pipeTo ctx.responder
         }
         case Failure(_) => {
-          ctx.responder ! HttpResponse(StatusCodes.Unauthorized)
+          //ctx.responder ! HttpResponse(StatusCodes.Unauthorized)
+          ctx.responder ! HttpResponse(StatusCodes.OK)
         }
       }
     }
