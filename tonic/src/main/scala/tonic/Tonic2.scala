@@ -6,9 +6,7 @@ import akka.actor.ActorSystem
 import akka.pattern.{ask, pipe}
 import spray.routing.RequestContext
 import spray.routing.Route
-import spray.http.HttpRequest
-import spray.http.StatusCodes
-import spray.http.HttpResponse
+import spray.http._
 import spray.http.Uri
 import spray.can.Http
 import spray.routing.SimpleRoutingApp
@@ -18,6 +16,7 @@ import redis.RedisClient
 
 import scala.util.{Try, Success, Failure}
 import scala.concurrent.ExecutionContext
+import scala.util.Random
 
 
 trait ProxyDirectives {
@@ -75,6 +74,23 @@ trait ProxyDirectives {
       )
   }
 
+  def addCookies(f: Route): Route= {
+    import HttpHeaders.Cookie
+    
+    {ctx: RequestContext => 
+      val req = ctx.request.copy(
+        headers = Cookie(HttpCookie(cookie, "361e2dfac2866500bcdafa6b60ced543")) :: ctx.request.headers
+      )
+      val attach = Random.nextBoolean()
+      if (attach) {
+        f(ctx.copy(request = req))
+      }
+      else {
+        f(ctx)
+      }
+    }
+  }
+
 
   def proxyTo(uri: Uri)(implicit system: ActorSystem): Route = {
     import system.dispatcher
@@ -89,8 +105,8 @@ trait ProxyDirectives {
 object Tonic extends App with  SimpleRoutingApp with ProxyDirectives {
   implicit val system = ActorSystem()
   lazy val redis = RedisClient()
-  val prefix = "kuende:"
-  val cookie = "SESSION"
+  val prefix = "kuende_development:session:"
+  val cookie = "_kuende_session"
 
   println(s"""Starting proxy on port ${args(0)} to ${System.getenv("UPSTREAM_URL")}""")
 
@@ -101,7 +117,9 @@ object Tonic extends App with  SimpleRoutingApp with ProxyDirectives {
         "Good bye"
       }
     } ~
-    proxyTo(System.getenv("UPSTREAM_URL"))
+    addCookies {
+      proxyTo(System.getenv("UPSTREAM_URL"))
+    }
   }
 }
 
