@@ -38,12 +38,14 @@ object Tonic2Build extends Build {
   )
 
   lazy val repos = Seq(
-    "spray repo" at "http://repo.spray.io"
+    "spray repo" at "http://repo.spray.io",
+    "rediscala" at "http://dl.bintray.com/etaty/maven"
   )
   lazy val deps = Seq(
     "io.spray" %% "spray-can" % "1.3.2",
     "io.spray" %% "spray-routing" % "1.3.2",
-    "com.typesafe.akka" %% "akka-actor" % "2.3.6"
+    "com.typesafe.akka" %% "akka-actor" % "2.3.6",
+    "com.etaty.rediscala" %% "rediscala" % "1.4.0"
   )
 
 }
